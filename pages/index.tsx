@@ -329,7 +329,7 @@ export default function PassphraseGenerator() {
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col items-center justify-center p-4">
       <Head>
-        <title>Password-X</title>
+        <title>PwZap</title>
         <meta name="description" content="Generate secure passphrases with customizable options" />
       </Head>
 
