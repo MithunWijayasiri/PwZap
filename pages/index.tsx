@@ -8,9 +8,8 @@ type GeneratorType = "password" | "passphrase";
 type SymbolOption = "#" | "*" | "!" | "%";
 type ButtonSize = "small" | "medium";
 
-// ### Helper Components
+// Helper Components
 
-/** Single-Select Button Group */
 function SingleSelectButtonGroup<T extends string>({
   options,
   selected,
@@ -31,8 +30,8 @@ function SingleSelectButtonGroup<T extends string>({
           onClick={() => onChange(option)}
           className={`${paddingClass} rounded-lg transition-colors text-sm ${
             selected === option
-              ? "bg-indigo-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              ? "bg-[var(--color-primary)] text-[var(--color-text-primary)]"
+              : "bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
           }`}
         >
           {option.charAt(0).toUpperCase() + option.slice(1)}
@@ -42,7 +41,6 @@ function SingleSelectButtonGroup<T extends string>({
   );
 }
 
-/** Multi-Select Button Group */
 function MultiSelectButtonGroup<T extends string>({
   options,
   selected,
@@ -70,8 +68,8 @@ function MultiSelectButtonGroup<T extends string>({
           onClick={() => toggleOption(option)}
           className={`${paddingClass} rounded-lg transition-colors text-sm ${
             selected.includes(option)
-              ? "bg-indigo-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              ? "bg-[var(--color-primary)] text-[var(--color-text-primary)]"
+              : "bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
           }`}
         >
           {option}
@@ -81,7 +79,6 @@ function MultiSelectButtonGroup<T extends string>({
   );
 }
 
-/** Slider Component */
 function Slider({
   min,
   max,
@@ -97,8 +94,8 @@ function Slider({
 }) {
   return (
     <div className="mb-6">
-      <label className="block text-gray-300 mb-2">
-        {label}: <span className="font-bold text-indigo-400">{value}</span>
+      <label className="block text-[var(--color-text-secondary)] mb-2">
+        {label}: <span className="font-bold text-[var(--color-primary)]">{value}</span>
       </label>
       <input
         type="range"
@@ -106,9 +103,9 @@ function Slider({
         max={max}
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value))}
-        className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+        className="w-full h-2 bg-[var(--color-surface-light)] rounded-lg appearance-none cursor-pointer accent-[var(--color-primary-border)]"
       />
-      <div className="flex justify-between text-xs text-gray-500 mt-1">
+      <div className="flex justify-between text-xs text-[var(--color-text-dim)] mt-1">
         <span>{min}</span>
         <span>{max}</span>
       </div>
@@ -116,9 +113,8 @@ function Slider({
   );
 }
 
-// ### Utility Functions
+// Utility Functions
 
-/** Fetch Random Words from API */
 const fetchRandomWords = async (count: number): Promise<string[]> => {
   try {
     const response = await fetch(
@@ -140,7 +136,6 @@ const fetchRandomWords = async (count: number): Promise<string[]> => {
   }
 };
 
-/** Generate Random Password */
 const generateRandomPassword = (length: number, mode: GeneratorMode): string => {
   let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let password = "";
@@ -175,7 +170,6 @@ const generateRandomPassword = (length: number, mode: GeneratorMode): string => 
   return password;
 };
 
-/** Enhance Words for Advanced Mode */
 const enhanceWordsForAdvancedMode = (words: string[], mode: GeneratorMode): string[] => {
   if (mode !== "advanced") return words;
   const symbols = ["!", "@", "#", "$", "%", "&", "*", "?", "=", "~"];
@@ -195,12 +189,11 @@ const enhanceWordsForAdvancedMode = (words: string[], mode: GeneratorMode): stri
   });
 };
 
-/** Capitalize First Letter of Words */
 const capitalizeFirstLetter = (words: string[]): string[] => {
   return words.map((word) => word.charAt(0).toUpperCase() + word.slice(1));
 };
 
-// ### Main Component
+// Main Component
 export default function PassphraseGenerator() {
   const [mode, setMode] = useState<GeneratorMode>("advanced");
   const [generatorType, setGeneratorType] = useState<GeneratorType>("password");
@@ -217,7 +210,7 @@ export default function PassphraseGenerator() {
   const separatorOptions: SeparatorOption[] = ["-", "_", ".", "+"];
   const symbolOptions: SymbolOption[] = ["#", "*", "!", "%"];
 
-  // ### Event Handlers
+  // Event Handlers
 
   const generatePassword = () => {
     const password = generateRandomPassword(passwordLength, mode);
@@ -306,8 +299,6 @@ export default function PassphraseGenerator() {
     }
   };
 
-  // ### Effects
-
   useEffect(() => {
     handleGenerate();
   }, [mode, wordCount, separator, capitalize, generatorType, passwordLength, selectedSymbols]);
@@ -325,41 +316,38 @@ export default function PassphraseGenerator() {
     }
   }, [generatorType]);
 
-  // ### Render
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text-primary)] flex flex-col items-center justify-center p-4">
       <Head>
         <title>PwZap</title>
-        <meta name="description" content="Generate secure passphrases with customizable options" />
+        <meta name="description" content="Secure passwords, made simple." />
       </Head>
 
-      <div className="w-full max-w-2xl bg-gray-800 rounded-xl shadow-xl p-6 md:p-8">
-        <h1 className="text-3xl font-bold text-center mb-6 text-indigo-400">
+      <div className="w-full max-w-2xl bg-[var(--color-surface)] rounded-xl shadow-xl p-6 md:p-8">
+        <h1 className="text-3xl font-bold text-center mb-6 text-[var(--color-primary-text)]">
           Secure Password Generator
         </h1>
 
-        {/* Type Selection */}
         <div className="mb-6">
           <SingleSelectButtonGroup
             options={["password", "passphrase"] as const}
             selected={generatorType}
             onChange={setGeneratorType}
-            size="medium" // Larger buttons for password/passphrase
+            size="medium"
           />
-          <p className="text-sm text-gray-400 text-center">
+          <p className="text-sm text-[var(--color-text-muted)] text-center">
             {generatorType === "password" ? "Generate a random password" : "Generate a secure passphrase"}
           </p>
         </div>
 
-        {/* Mode Selection */}
         <div className="mb-6">
           <SingleSelectButtonGroup
             options={["basic", "advanced"] as const}
             selected={mode}
             onChange={setMode}
-            size="medium" // Larger buttons for basic/advanced
+            size="medium"
           />
-          <p className="text-sm text-gray-400 text-center">
+          <p className="text-sm text-[var(--color-text-muted)] text-center">
             {mode === "basic"
               ? generatorType === "password"
                 ? "Simple capital letters and numbers"
@@ -370,7 +358,6 @@ export default function PassphraseGenerator() {
           </p>
         </div>
 
-        {/* Slider */}
         {generatorType === "password" ? (
           <Slider
             min={8}
@@ -389,36 +376,35 @@ export default function PassphraseGenerator() {
           />
         )}
 
-        {/* Passphrase Controls */}
         {generatorType === "passphrase" && (
           <div className="mb-6 grid grid-cols-3 gap-4">
             <div className="flex flex-col gap-2">
-              <h3 className="text-base text-gray-300 text-center">Separator</h3>
+              <h3 className="text-base text-[var(--color-text-secondary)] text-center">Separator</h3>
               <SingleSelectButtonGroup
                 options={separatorOptions}
                 selected={separator}
                 onChange={setSeparator}
-                size="small" // Smaller buttons for separators
+                size="small"
               />
             </div>
             <div className="flex flex-col gap-2">
-              <h3 className="text-base text-gray-300 text-center">Symbols</h3>
+              <h3 className="text-base text-[var(--color-text-secondary)] text-center">Symbols</h3>
               <MultiSelectButtonGroup
                 options={symbolOptions}
                 selected={selectedSymbols}
                 onChange={setSelectedSymbols}
-                size="small" // Smaller buttons for symbols
+                size="small"
               />
             </div>
             <div className="flex flex-col gap-2">
-              <h3 className="text-base text-gray-300 text-center">Format</h3>
+              <h3 className="text-base text-[var(--color-text-secondary)] text-center">Format</h3>
               <div className="flex justify-center">
                 <button
                   onClick={() => setCapitalize(!capitalize)}
                   className={`px-4 py-1 rounded-lg transition-colors text-sm ${
                     capitalize
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      ? "bg-[var(--color-primary)] text-[var(--color-text-primary)]"
+                      : "bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
                   }`}
                 >
                   Capitalize
@@ -428,15 +414,14 @@ export default function PassphraseGenerator() {
           </div>
         )}
 
-        {/* Generated Passphrase */}
         <div className="relative mb-6">
-          <div className="bg-gray-900 p-4 rounded-lg border border-gray-700 min-h-24 flex items-center justify-center overflow-hidden">
+          <div className="bg-[var(--color-background)] p-4 rounded-lg border border-[var(--color-surface-light)] min-h-24 flex items-center justify-center overflow-hidden">
             {loading ? (
               <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-indigo-500"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-[var(--color-primary-border)]"></div>
               </div>
             ) : error ? (
-              <p className="text-red-400 text-center">{error}</p>
+              <p className="text-[var(--color-error)] text-center">{error}</p>
             ) : (
               <p
                 className="text-lg md:text-xl text-center break-all font-mono whitespace-nowrap"
@@ -455,26 +440,25 @@ export default function PassphraseGenerator() {
             <button
               onClick={copyToClipboard}
               disabled={!passphrase || loading}
-              className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 rounded-lg bg-[var(--color-surface-light)] hover:bg-[var(--color-surface-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               title="Copy to clipboard"
             >
-              <FiCopy className={`${copied ? "text-green-400" : "text-indigo-300"} transition-colors`} />
+              <FiCopy className={`${copied ? "text-[var(--color-success)]" : "text-[var(--color-primary-light)]"} transition-colors`} />
             </button>
             <button
               onClick={handleGenerate}
               disabled={loading}
-              className="p-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 rounded-lg bg-[var(--color-surface-light)] hover:bg-[var(--color-surface-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               title="Generate new passphrase"
             >
-              <FiRefreshCw className={`text-indigo-300 ${loading ? "animate-spin" : ""}`} />
+              <FiRefreshCw className={`text-[var(--color-primary-light)] ${loading ? "animate-spin" : ""}`} />
             </button>
           </div>
         </div>
 
-        {/* Security Info */}
-        <div className="mt-8 bg-gray-900 p-4 rounded-lg border border-gray-700">
-          <h2 className="text-lg font-semibold mb-2 text-indigo-400">Security Information</h2>
-          <div className="text-xs text-gray-500 space-y-1">
+        <div className="mt-8 bg-[var(--color-background)] p-4 rounded-lg border border-[var(--color-surface-light)]">
+          <h2 className="text-lg font-semibold mb-2 text-[var(--color-primary-text)]">Security Information</h2>
+          <div className="text-xs text-[var(--color-text-dim)] space-y-1">
             <p>• All processing happens in your browser</p>
             <p>• For maximum security, consider adding your own modifications</p>
             {generatorType === "passphrase" && mode === "advanced" && (
