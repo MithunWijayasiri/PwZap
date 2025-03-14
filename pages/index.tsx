@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { FiCopy, FiRefreshCw } from "react-icons/fi";
 import Head from "next/head";
+import { fetchRandomWords } from "../services/wordService";
+import { 
+  getWordnikRandomWordUrl, 
+  getWordnikRandomWordsUrl, 
+  getRandomWordApiUrl,
+  WordnikWord,
+  RandomWordApiResponse
+} from "../config/api";
 
 type GeneratorMode = "basic" | "advanced";
 type SeparatorOption = "-" | "_" | "." | "+";
@@ -112,96 +120,9 @@ function Slider({
   );
 }
 
-// Utility Functions
-
 // Base64-encoded blocked words (refined list)
 const encodedBlockedWords = "WyJkaWNrIiwiZnVjayIsInNoaXQiLCJhc3MiLCJiaXRjaCIsImN1bnQiLCJkYW1uIiwicGlzcyIsImNvY2siLCJwdXNzeSIsImNyaW5nZSIsInNleCIsImtpbGwiLCJpZGlvdCJd";
 const blockedWords = JSON.parse(atob(encodedBlockedWords)).map((word: string) => word.toLowerCase());
-
-const fetchWordsBulk = async (count: number, api: "wordnik" | "random-word"): Promise<string[]> => {
-  if (api === "wordnik") {
-    const response = await fetch(
-      `https://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&minCorpusCount=10000&minLength=3&maxLength=8&limit=${count}&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5`
-    );
-    if (!response.ok) throw new Error("Failed to fetch words from Wordnik");
-    const data = await response.json();
-    return data.map((wordObj: any) => wordObj.word.toLowerCase());
-  } else {
-    const response = await fetch(
-      `https://random-word-api.herokuapp.com/word?number=${count}&length=5`
-    );
-    if (!response.ok) throw new Error("Failed to fetch words from random-word API");
-    return await response.json();
-  }
-};
-
-const fetchSingleRandomWord = async (api: "wordnik" | "random-word"): Promise<string> => {
-  if (api === "wordnik") {
-    const response = await fetch(
-      `https://api.wordnik.com/v4/words.json/randomWord?hasDictionaryDef=true&minCorpusCount=10000&minLength=3&maxLength=8&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5`
-    );
-    if (!response.ok) throw new Error("Failed to fetch word from Wordnik");
-    const data = await response.json();
-    return data.word.toLowerCase();
-  } else {
-    const response = await fetch(
-      `https://random-word-api.herokuapp.com/word?number=1&length=5`
-    );
-    if (!response.ok) throw new Error("Failed to fetch word from random-word API");
-    const [word] = await response.json();
-    return word.toLowerCase();
-  }
-};
-
-const fetchRandomWords = async (count: number): Promise<string[]> => {
-  let words: string[] = [];
-  
-  // Try bulk fetch from Wordnik first
-  try {
-    words = await fetchWordsBulk(count, "wordnik");
-  } catch (error) {
-    // Fallback to random-word API if Wordnik fails
-    try {
-      words = await fetchWordsBulk(count, "random-word");
-    } catch (secondError) {
-      return Array(count).fill("safe"); // Ultimate fallback
-    }
-  }
-
-  // Filter out blocked words and replace them
-  const replacementsNeeded = words.filter(word => blockedWords.includes(word)).length;
-  if (replacementsNeeded > 0) {
-    const replacementPromises = Array(replacementsNeeded).fill(null).map(async () => {
-      let word: string;
-      let attempts = 0;
-      const maxAttempts = 5; // Reduced retries for speed
-      
-      do {
-        attempts++;
-        try {
-          word = await fetchSingleRandomWord("wordnik");
-        } catch (error) {
-          try {
-            word = await fetchSingleRandomWord("random-word");
-          } catch (secondError) {
-            word = "safe";
-            break;
-          }
-        }
-      } while (blockedWords.includes(word) && attempts < maxAttempts);
-      
-      return blockedWords.includes(word) ? "safe" : word;
-    });
-
-    const replacements = await Promise.all(replacementPromises);
-    let replacementIndex = 0;
-    words = words.map(word => 
-      blockedWords.includes(word) ? replacements[replacementIndex++] : word
-    );
-  }
-
-  return words;
-};
 
 const generateRandomPassword = (length: number, mode: GeneratorMode): string => {
   let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -286,7 +207,7 @@ export default function PassphraseGenerator() {
     setLoading(true);
     setError(null);
     try {
-      let words = await fetchRandomWords(wordCount);
+      let words = await fetchRandomWords(wordCount, blockedWords);
       if (words.length === 0) {
         setError("Failed to fetch words. Please try again.");
         return;
@@ -307,6 +228,7 @@ export default function PassphraseGenerator() {
       setPassphrase(passphrase);
     } catch (err) {
       setError("An error occurred while generating the passphrase.");
+      console.error(err);
     } finally {
       setLoading(false);
     }
