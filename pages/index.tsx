@@ -37,7 +37,7 @@ function SingleSelectButtonGroup<T extends string>({
           onClick={() => onChange(option)}
           className={`${paddingClass} rounded-lg transition-colors text-sm ${
             selected === option
-              ? "bg-[var(--color-primary)] text-black"
+              ? "bg-[var(--color-primary)] text-[var(--selected-text-color)]"
               : "bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
           }`}
         >
@@ -75,7 +75,7 @@ function MultiSelectButtonGroup<T extends string>({
           onClick={() => toggleOption(option)}
           className={`${paddingClass} rounded-lg transition-colors text-sm ${
             selected.includes(option)
-              ? "bg-[var(--color-primary)] text-black"
+              ? "bg-[var(--color-primary)] text-[var(--selected-text-color)]"
               : "bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
           }`}
         >
@@ -373,7 +373,7 @@ export default function PassphraseGenerator() {
         {generatorType === "passphrase" && (
           <div className="mb-6 grid grid-cols-3 gap-4">
             <div className="flex flex-col gap-2">
-              <h3 className="text-base text-black text-center">Separator</h3>
+              <h3 className="text-base text-[var(--color-text-primary)] text-center">Separator</h3>
               <SingleSelectButtonGroup
                 options={separatorOptions}
                 selected={separator}
@@ -382,7 +382,7 @@ export default function PassphraseGenerator() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <h3 className="text-base text-black text-center">Symbols</h3>
+              <h3 className="text-base text-[var(--color-text-primary)] text-center">Symbols</h3>
               <MultiSelectButtonGroup
                 options={symbolOptions}
                 selected={selectedSymbols}
@@ -391,13 +391,13 @@ export default function PassphraseGenerator() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <h3 className="text-base text-black text-center">Format</h3>
+              <h3 className="text-base text-[var(--color-text-primary)] text-center">Format</h3>
               <div className="flex justify-center">
                 <button
                   onClick={() => setCapitalize(!capitalize)}
                   className={`px-4 py-1 rounded-lg transition-colors text-sm ${
                     capitalize
-                      ? "bg-[var(--color-primary)] text-black"
+                      ? "bg-[var(--color-primary)] text-[var(--selected-text-color)]"
                       : "bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
                   }`}
                 >
@@ -409,7 +409,7 @@ export default function PassphraseGenerator() {
         )}
 
         <div className="relative mb-6">
-          <div className="bg-[var(--color-background)] p-4 rounded-lg border border-[var(--color-surface-light)] min-h-24 flex items-center justify-center overflow-hidden">
+          <div className="bg-[var(--color-background)] p-4 rounded-lg border border-[var(--box-border-color)] min-h-24 flex items-center justify-center overflow-hidden">
             {loading ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-[var(--color-primary-border)]"></div>
@@ -450,7 +450,7 @@ export default function PassphraseGenerator() {
           </div>
         </div>
 
-        <div className="mt-8 bg-[var(--color-background)] p-4 rounded-lg border border-[var(--color-surface-light)]">
+        <div className="mt-8 bg-[var(--color-background)] p-4 rounded-lg border border-[var(--box-border-color)]">
           <h2 className="text-lg font-semibold mb-2 text-[var(--color-primary-text)]">Security Information</h2>
           <div className="text-xs text-[var(--color-text-dim)] space-y-1">
             <p>• All processing happens in your browser</p>
