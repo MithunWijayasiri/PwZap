@@ -310,11 +310,30 @@ export default function PassphraseGenerator() {
     }
   }, [generatorType]);
 
+  // Detect and apply color scheme
+  useEffect(() => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.classList.toggle('dark-mode', prefersDark);
+    document.body.classList.toggle('light-mode', !prefersDark);
+    
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      document.body.classList.toggle('dark-mode', e.matches);
+      document.body.classList.toggle('light-mode', !e.matches);
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text-primary)] flex flex-col items-center justify-center p-4">
       <Head>
         <title>PwZap</title>
         <meta name="description" content="Secure passwords, made simple." />
+        <meta name="color-scheme" content="dark light" />
+        <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
       </Head>
 
       <div className="w-full max-w-2xl bg-[var(--color-surface)] rounded-xl shadow-xl p-6 md:p-8">
