@@ -40,7 +40,6 @@ function SingleSelectButtonGroup<T extends string>({
               ? "bg-[var(--color-primary)] text-[var(--selected-text-color)]"
               : "bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
           }`}
-          style={selected === option ? { color: '#171717', WebkitTextFillColor: '#171717' } : {}}
         >
           {option.charAt(0).toUpperCase() + option.slice(1)}
         </button>
@@ -79,7 +78,6 @@ function MultiSelectButtonGroup<T extends string>({
               ? "bg-[var(--color-primary)] text-[var(--selected-text-color)]"
               : "bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
           }`}
-          style={selected.includes(option) ? { color: '#171717', WebkitTextFillColor: '#171717' } : {}}
         >
           {option}
         </button>
@@ -402,7 +400,6 @@ export default function PassphraseGenerator() {
                       ? "bg-[var(--color-primary)] text-[var(--selected-text-color)]"
                       : "bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)]"
                   }`}
-                  style={capitalize ? { color: '#171717', WebkitTextFillColor: '#171717' } : {}}
                 >
                   Capitalize
                 </button>
