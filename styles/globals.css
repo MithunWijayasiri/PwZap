@@ -23,6 +23,8 @@
   --color-success: #ffd700;
   --color-error: #ff5252;
   --heading-color: #ffc107;
+  --box-border-color: #333333;
+  --selected-text-color: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -54,6 +56,6 @@ button.yellow,
 .tab.selected,
 .tab[aria-selected="true"],
 .option-button.selected {
-  color: #000000;
+  color: var(--selected-text-color);
   background-color: var(--color-primary);
 }
