@@ -59,3 +59,27 @@ button.yellow,
   color: var(--selected-text-color);
   background-color: var(--color-primary);
 }
+
+/* Prevent Chrome's force-dark mode from changing text colors */
+@media (forced-colors: active), (-ms-high-contrast: active) {
+  .tab-button.active,
+  .nav-button.active,
+  button.primary,
+  button.yellow,
+  .option.active,
+  .tab.selected,
+  .tab[aria-selected="true"],
+  .option-button.selected,
+  [class*="bg-[var(--color-primary)]"] {
+    color: #171717 !important;
+    -webkit-text-fill-color: #171717 !important;
+    forced-color-adjust: none;
+  }
+}
+
+/* Additional protection against Chrome's force-dark mode */
+button[class*="bg-[var(--color-primary)]"] {
+  color: #171717 !important;
+  -webkit-text-fill-color: #171717 !important;
+  forced-color-adjust: none;
+}
