@@ -1,15 +1,8 @@
 import { useState, useEffect } from "react";
 import { FiCopy, FiRefreshCw } from "react-icons/fi";
 import Head from "next/head";
-import { fetchRandomWords } from "../services/wordService";
-import { 
-  getWordnikRandomWordUrl, 
-  getWordnikRandomWordsUrl, 
-  getRandomWordApiUrl,
-  WordnikWord,
-  RandomWordApiResponse
-} from "../config/api";
 
+// Type Definitions
 type GeneratorMode = "basic" | "advanced";
 type SeparatorOption = "-" | "_" | "." | "+";
 type GeneratorType = "password" | "passphrase";
@@ -227,11 +220,11 @@ export default function PassphraseGenerator() {
     setLoading(true);
     setError(null);
     try {
-      let words = await fetchRandomWords(wordCount, blockedWords).catch(async (error) => {
-        console.error("Failed to fetch words, using fallback:", error);
-        return Array(wordCount).fill(0).map((_, i) => `word${i+1}`);
-      });
+      // Use secure API route instead of direct API calls
+      const response = await fetch(`/api/words?count=${wordCount}&blockedWords=${encodedBlockedWords}`);
+      const data = await response.json();
       
+      let words = data.words;
       if (!words || words.length === 0) {
         words = Array(wordCount).fill(0).map((_, i) => `word${i+1}`);
       }
