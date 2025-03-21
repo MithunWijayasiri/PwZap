@@ -111,3 +111,18 @@ body.dark-mode {
     forced-color-adjust: none;
   }
 }
+
+/* Footer styles */
+.footer-link {
+  transition-property: color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.footer-link:hover {
+  color: var(--color-primary);
+}
+
+.footer-heart {
+  color: #ef4444;  /* Tailwind's red-500 */
+}

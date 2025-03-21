@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FiCopy, FiRefreshCw } from "react-icons/fi";
 import Head from "next/head";
+import { EXTERNAL_LINKS } from "../config/links";
 
 // Type Definitions
 type GeneratorMode = "basic" | "advanced";
@@ -493,6 +494,19 @@ export default function PassphraseGenerator() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-9 text-sm text-[var(--color-text-dim)]">
+        Made with <span className="footer-heart">❤</span> by{" "}
+        <a 
+          href={EXTERNAL_LINKS.PORTFOLIO}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="footer-link"
+        >
+          Mithun Wijayasiri
+        </a>
+      </footer>
     </div>
   );
 }
