@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FiCopy, FiRefreshCw } from "react-icons/fi";
 import Head from "next/head";
 import { EXTERNAL_LINKS } from "../config/links";
@@ -208,6 +208,9 @@ export default function PassphraseGenerator() {
   const [error, setError] = useState<string | null>(null);
   const [capitalize, setCapitalize] = useState<boolean>(false);
   const [selectedSymbols, setSelectedSymbols] = useState<SymbolOption[]>([]);
+  
+  // Add ref at the component level
+  const initialRenderSettings = useRef(true);
 
   const separatorOptions: SeparatorOption[] = ["-", "_", ".", "+"];
   const symbolOptions: SymbolOption[] = ["#", "*", "!", "%"];
@@ -221,7 +224,7 @@ export default function PassphraseGenerator() {
     setLoading(true);
     setError(null);
     try {
-      // Use secure API route instead of direct API calls
+      // Use secure API route
       const response = await fetch(`/api/words?count=${wordCount}&blockedWords=${encodedBlockedWords}`);
       const data = await response.json();
       
@@ -307,10 +310,7 @@ export default function PassphraseGenerator() {
     }
   };
 
-  useEffect(() => {
-    handleGenerate();
-  }, [mode, wordCount, separator, capitalize, generatorType, passwordLength, selectedSymbols]);
-
+  // Update settings when generator type changes, but don't trigger generation
   useEffect(() => {
     if (generatorType === "password") {
       setMode("advanced");
@@ -323,6 +323,23 @@ export default function PassphraseGenerator() {
       setSelectedSymbols([]);
     }
   }, [generatorType]);
+
+  // This effect handles all generation based on state changes
+  useEffect(() => {
+    // Skip the initial render - the dedicated first-render effect will handle it
+    if (initialRenderSettings.current) {
+      initialRenderSettings.current = false;
+      return;
+    }
+    
+    // Use a short delay to ensure all state changes are applied first
+    // This prevents double API calls when switching between generator types
+    const timer = setTimeout(() => {
+      handleGenerate();
+    }, 50);
+    
+    return () => clearTimeout(timer);
+  }, [mode, wordCount, separator, capitalize, passwordLength, selectedSymbols, generatorType]);
 
   // Detect and apply color scheme
   useEffect(() => {
@@ -338,6 +355,12 @@ export default function PassphraseGenerator() {
     
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  // Run once on initial render to generate the first password/passphrase
+  useEffect(() => {
+    handleGenerate();
+    // Empty dependency array means this runs once on mount
   }, []);
 
   return (
